@@ -1,7 +1,7 @@
 <?php
 
-it('returns a successful response', function () {
+it('home route redirects to /polls', function () {
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    $response->assertRedirect('/polls');
 });
