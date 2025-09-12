@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'horizon_secret' => env('HORIZON_SECRET'),
 ];
