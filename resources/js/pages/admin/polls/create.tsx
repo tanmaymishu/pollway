@@ -67,12 +67,24 @@ const CreatePoll: React.FC = () => {
                         {errors?.title && <p className="text-xs text-red-500">{errors.title}</p>}
                     </section>
                     <section className="flex items-center gap-2">
-                        <Checkbox id="withdrawable" className="cursor-pointer" onClick={(e) => setData('withdrawable', e.currentTarget.ariaChecked !== 'true')}></Checkbox>
-                        <label htmlFor="withdrawable" className="cursor-pointer select-none text-sm">Vote can be withdrawn</label>
+                        <Checkbox
+                            id="withdrawable"
+                            className="cursor-pointer"
+                            onClick={(e) => setData('withdrawable', e.currentTarget.ariaChecked !== 'true')}
+                        ></Checkbox>
+                        <label htmlFor="withdrawable" className="cursor-pointer text-sm select-none">
+                            Vote can be withdrawn
+                        </label>
                     </section>
                     <section className="flex items-center gap-2">
-                        <Checkbox id="result_visible" className="cursor-pointer" onClick={(e) => setData('result_visible', e.currentTarget.ariaChecked !== 'true')}></Checkbox>
-                        <label htmlFor="result_visible" className="cursor-pointer select-none text-sm">Result is visible</label>
+                        <Checkbox
+                            id="result_visible"
+                            className="cursor-pointer"
+                            onClick={(e) => setData('result_visible', e.currentTarget.ariaChecked !== 'true')}
+                        ></Checkbox>
+                        <label htmlFor="result_visible" className="cursor-pointer text-sm select-none">
+                            Result is visible
+                        </label>
                     </section>
                     <section className="flex flex-col gap-2">
                         {newOptions?.map((no, index) => {
