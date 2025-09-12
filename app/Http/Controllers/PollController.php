@@ -14,7 +14,11 @@ class PollController extends Controller
      */
     public function index()
     {
-        $polls = Poll::with(['options.votes', 'votes'])->simplePaginate(5);
+        $polls = Poll::query()
+            ->withOwnVote()
+            ->with(['options'])
+            ->simplePaginate(5);
+
         return Inertia::render('polls/index', ['polls' => $polls]);
     }
 
@@ -39,7 +43,13 @@ class PollController extends Controller
      */
     public function show(Poll $poll)
     {
-        return Inertia::render('polls/show', ['poll' => $poll->load('votes', 'options')]);
+        $poll = Poll::query()
+            ->withOwnVote()
+            ->with(['options'])
+            ->where('id', $poll->id)
+            ->first();
+
+        return Inertia::render('polls/show', ['poll' => $poll]);
     }
 
     /**

@@ -25,7 +25,7 @@ createInertiaApp({
             <>
                 {app}
                 <Toaster
-                    position="bottom-right"
+                    position="top-right"
                     toastOptions={{
                         style: {
                             background: 'bg-primary',

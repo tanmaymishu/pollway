@@ -4,8 +4,8 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import polls from '@/routes/admin/polls';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { type NavItem, SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, ChartColumnBig, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -39,6 +39,7 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const auth = usePage<SharedData>().props.auth
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -55,11 +56,11 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain groupLabel="Main" items={mainNavItems} />
-                <NavMain groupLabel="Admin" items={adminNavItems} />
+                {Boolean(auth?.user?.is_admin) && <NavMain groupLabel="Admin" items={adminNavItems} />}
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                {/*<NavFooter items={footerNavItems} className="mt-auto" />*/}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

@@ -45,7 +45,7 @@ const CreatePoll: React.FC = () => {
     }
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={[{title: 'Polls', href: AdminPollController.index().url}]}>
             <div className="px-16 py-4 flex flex-col gap-4">
                 <Button asChild variant="outline" className="self-start">
                     <Link href={polls.index()}><ArrowLeft/>Back</Link>

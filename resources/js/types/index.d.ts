@@ -33,6 +33,7 @@ export interface SharedData {
 
 export interface User {
     id: number;
+    is_admin: boolean;
     name: string;
     email: string;
     avatar?: string;
@@ -49,6 +50,8 @@ export interface Poll {
     description?: string;
     options: PollOption[];
     votes: PollVote[];
+    own_vote: PollVote;
+    own_vote_id: number;
     result_visible: boolean;
     withdrawable: boolean;
     created_at: string;
