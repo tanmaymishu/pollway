@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poll;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -12,7 +11,7 @@ class AdminPollController extends Controller
 {
     public function index()
     {
-        return Inertia::render('admin/polls/index');
+        return Inertia::render('admin/polls/index', ['polls' => Poll::with('votes', 'options')->simplePaginate(10)]);
     }
 
     public function create()
@@ -25,7 +24,9 @@ class AdminPollController extends Controller
         $request->validate([
             'title' => ['required'],
             'description' => ['sometimes', 'nullable'],
-            'options' => ['required', 'array'],
+            'result_visible' => ['required', 'boolean'],
+            'withdrawable' => ['required', 'boolean'],
+            'options' => ['required', 'array', 'min:2'],
             'options.*' => ['required', 'string'],
         ]);
 
@@ -33,17 +34,15 @@ class AdminPollController extends Controller
         $slug = Str::slug($request->title);
 
         while (Poll::query()->where('slug', $slug)->exists()) {
-            $slug = $originalSlug . Str::random(4);
+            $slug = $originalSlug . '-' . Str::random(4);
         }
 
-        $poll = auth()->user()->polls()->create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'slug' => $slug,
-        ]);
+        $poll = auth()->user()->polls()->create(
+            $request->merge(['slug' => $slug])->only(['title', 'description', 'result_visible', 'withdrawable', 'slug'])
+        );
 
         $poll->options()->createMany(collect($request->options)->map(fn($option) => ['label' => $option]));
 
-        return back();
+        return redirect()->route('admin.polls.index');
     }
 }

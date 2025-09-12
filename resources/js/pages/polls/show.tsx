@@ -1,31 +1,20 @@
-import { Poll } from '@/types';
+import { Poll, SharedData } from '@/types';
 import * as React from 'react';
 import { AppHeader } from '@/components/app-header';
-import { Input } from '@/components/ui/input';
+import SinglePoll from '@/components/polls/single-poll';
+import { usePage } from '@inertiajs/react';
 
 interface PollShowProps {
     poll: Poll;
 }
 
 const PollShow: React.FC<PollShowProps> = ({ poll }) => {
+    const ip = usePage<SharedData>().props.ip;
+
     return (
-        <section>
+        <section className="container mx-auto">
             <AppHeader/>
-            <div className="flex flex-col container p-8 mx-auto gap-2 my-4">
-                <section className="text-4xl">Polls</section>
-                <hr/>
-                <section>
-                    <div key={poll.id}>
-                        {poll.title}
-                        {poll?.options?.map(o => {
-                            return <section key={o.id} className="flex justify-between items-center">
-                                <label>{o.label}</label>
-                                <Input type="radio" value={o.id} name={`poll_${o.poll_id}`}/>
-                            </section>
-                        })}
-                    </div>
-                </section>
-            </div>
+            <SinglePoll resultVisible={poll.result_visible} withdrawable={poll.withdrawable} initialPoll={poll} handleVote={()=>{}} handleVoteWithdraw={()=>{}} ip={ip}/>
         </section>
     );
 };

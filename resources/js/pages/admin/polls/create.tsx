@@ -6,7 +6,7 @@ import polls from '@/routes/admin/polls';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import * as React from 'react';
 import { useState } from 'react';
-import { PlusIcon, TrashIcon } from 'lucide-react';
+import { ArrowLeft, CheckCircle, PlusIcon, SendToBack, StepBack, TrashIcon } from 'lucide-react';
 import AdminPollController from '@/actions/App/Http/Controllers/AdminPollController';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -14,6 +14,8 @@ const CreatePoll: React.FC = () => {
     const [newOptions, setNewOptions] = useState<string[]>([]);
     const {data, setData, post} = useForm({
         title: '',
+        withdrawable: false,
+        result_visible: false,
         options: [] as string[],
     });
     const errors = usePage().props.errors;
@@ -44,9 +46,9 @@ const CreatePoll: React.FC = () => {
 
     return (
         <AppLayout>
-            <div className="px-16 py-4">
-                <Button asChild variant="outline">
-                    <Link href={polls.index()}>Back</Link>
+            <div className="px-16 py-4 flex flex-col gap-4">
+                <Button asChild variant="outline" className="self-start">
+                    <Link href={polls.index()}><ArrowLeft/>Back</Link>
                 </Button>
                 <form className="flex flex-col gap-4">
                     <section className="">
@@ -55,11 +57,11 @@ const CreatePoll: React.FC = () => {
                         {errors?.title && <p className="text-xs text-red-500">{errors.title}</p>}
                     </section>
                     <section className="flex gap-2 items-center">
-                        <Checkbox></Checkbox>
+                        <Checkbox onClick={e => setData('withdrawable', e.currentTarget.ariaChecked !== 'true')}></Checkbox>
                         <label htmlFor="withdrawable">Vote can be withdrawn</label>
                     </section>
                     <section className="flex gap-2 items-center">
-                        <Checkbox></Checkbox>
+                        <Checkbox onClick={e => setData('result_visible', e.currentTarget.ariaChecked !== 'true')}></Checkbox>
                         <label htmlFor="result_visible">Result is visible</label>
                     </section>
                     <section className='flex flex-col gap-2'>
@@ -76,7 +78,7 @@ const CreatePoll: React.FC = () => {
                         {errors?.options && <p className="text-xs text-red-500">{errors.options}</p>}
                     </section>
                     <section>
-                        <Button type="button" onClick={handleSubmit}>Save</Button>
+                        <Button type="button" onClick={handleSubmit}><CheckCircle/>Save Poll</Button>
                     </section>
                 </form>
             </div>

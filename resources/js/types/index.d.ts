@@ -49,6 +49,8 @@ export interface Poll {
     description?: string;
     options: PollOption[];
     votes: PollVote[];
+    result_visible: boolean;
+    withdrawable: boolean;
     created_at: string;
     updated_at: string;
     [key: string]: unknown;
@@ -57,6 +59,7 @@ export interface Poll {
 export interface PollOption {
     id: number;
     poll_id: number;
+    vote_count: number;
     label: string;
     votes: PollVote[];
     created_at: string;
@@ -67,6 +70,8 @@ export interface PollOption {
 export interface PollVote {
     id: number;
     poll_id: number;
+    poll: Poll;
+    option: PollOption;
     poll_option_id: number;
     user_id: number;
     ip_address: string;

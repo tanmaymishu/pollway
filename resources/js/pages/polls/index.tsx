@@ -1,11 +1,11 @@
-import PollController from '@/actions/App/Http/Controllers/PollController';
 import { AppHeader } from '@/components/app-header';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Poll, PollOption, SharedData, SimplePaginate } from '@/types';
-import { Link, router, usePage } from '@inertiajs/react';
+import SinglePoll from '@/components/polls/single-poll';
+import { Button } from '@/components/ui/button';
+import { Poll, PollOption, PollVote, SharedData, SimplePaginate } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { LineChart } from 'lucide-react';
 import * as React from 'react';
+import { toast } from 'sonner';
 
 interface PollIndexProps {
     polls: SimplePaginate<Poll>;
@@ -14,10 +14,40 @@ interface PollIndexProps {
 const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
     const ip = usePage<SharedData>().props.ip;
 
-    function handleVote(option: PollOption) {
-        router.post('/api/polls/' + option.poll_id + '/votes', {poll_option_id: option.id});
+    async function handleVote(option: PollOption) {
+        const response = await fetch('/api/polls/' + option.poll_id + '/votes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ poll_option_id: option.id }),
+        });
+
+        // if (response.status === 201) {
+        //     toast('Thank you, your vote has been casted!');
+        // }
+
+        if (response.status === 403) {
+            toast('Your vote has already been casted!');
+        }
     }
 
+    async function handleVoteWithdraw(pv: PollVote) {
+        const response = await fetch(`/api/poll-votes/${pv.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        // if (response.status === 204) {
+        //     toast('Thank you, your vote has been withdrawn!');
+        // }
+
+        if (response.status === 403) {
+            toast('IP Misuse!');
+        }
+    }
     return (
         <section>
             <AppHeader />
@@ -35,38 +65,28 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
                     {polls?.data?.length > 0 &&
                         polls?.data?.map((poll) => {
                             return (
-                                <div key={poll.id} className="flex flex-col gap-4">
-                                    <section className="text-4xl hover:underline">
-                                        <Link href={PollController.show(poll.slug)}>
-                                            #{poll.id} - {poll.title}
-                                        </Link>
-                                    </section>
-                                    <RadioGroup defaultValue={poll.votes.find(p => p.ip_address === ip)?.poll_option_id.toString()}>
-                                        {poll?.options?.map((o) => {
-                                            return (
-                                                <section key={o.id} className="flex items-center justify-between">
-                                                    <Label
-                                                        htmlFor={`poll_${o.poll_id}_opt_${o.id}`}
-                                                        className="flex w-1/2 cursor-pointer items-center gap-3 rounded-md border px-4 py-4"
-                                                    >
-                                                        <RadioGroupItem
-                                                            disabled={poll.votes.filter(p => p.ip_address === ip).length > 0}
-                                                            onClick={() => handleVote(o)}
-                                                            value={o.id.toString()}
-                                                            id={`poll_${o.poll_id}_opt_${o.id}`}
-                                                            className="cursor-pointer"
-                                                        />
-                                                        {o.label} {o.votes.length}
-                                                    </Label>
-                                                </section>
-                                            );
-                                        })}
-                                    </RadioGroup>
-                                </div>
+                                <SinglePoll
+                                    resultVisible={poll.result_visible}
+                                    withdrawable={poll.withdrawable}
+                                    key={poll.id}
+                                    initialPoll={poll}
+                                    handleVote={handleVote}
+                                    handleVoteWithdraw={handleVoteWithdraw}
+                                    ip={ip}
+                                />
                             );
                         })}
                 </section>
+                <div className="flex justify-between">
+                    {polls.prev_page_url ? <Button variant="link" asChild>
+                        <Link href={polls.prev_page_url}>Prev</Link>
+                    </Button>: <div></div>}
+                    {polls.next_page_url ? <Button variant="link" asChild>
+                        <Link href={polls.next_page_url}>Next</Link>
+                    </Button> : <div></div>}
+                </div>
             </div>
+            <footer className="text-center">©{new Date().getFullYear()} PollWay.</footer>
         </section>
     );
 };

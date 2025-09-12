@@ -4,6 +4,12 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
+import { configureEcho } from '@laravel/echo-react';
+import { Toaster } from '@/components/ui/sonner';
+
+configureEcho({
+    broadcaster: 'reverb',
+});
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -13,7 +19,23 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        const app = <App {...props} />;
+
+        root.render(
+            <>
+                {app}
+                <Toaster
+                    position="bottom-right"
+                    toastOptions={{
+                        style: {
+                            background: 'bg-primary',
+                            color: 'hsl(var(--foreground))',
+                            border: '1px solid hsl(var(--border))',
+                        },
+                    }}
+                />
+            </>,
+        );
     },
     progress: {
         color: '#4B5563',

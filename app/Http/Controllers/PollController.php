@@ -39,7 +39,7 @@ class PollController extends Controller
      */
     public function show(Poll $poll)
     {
-        return Inertia::render('polls/show', ['poll' => $poll]);
+        return Inertia::render('polls/show', ['poll' => $poll->load('votes', 'options')]);
     }
 
     /**

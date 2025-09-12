@@ -1,23 +1,56 @@
-import AppLayout from '@/layouts/app-layout';
-import { Poll } from '@/types';
-import { Link } from '@inertiajs/react';
-import * as React from 'react';
+import AdminPollController from '@/actions/App/Http/Controllers/AdminPollController';
+import PollController from '@/actions/App/Http/Controllers/PollController';
 import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { Poll, SimplePaginate } from '@/types';
+import { Link } from '@inertiajs/react';
+import { ExternalLink, PlusIcon } from 'lucide-react';
 
-interface AdminPollsProps {
-    polls: Poll[];
+interface AdminPollIndexProps {
+    polls: SimplePaginate<Poll>;
 }
 
-const AdminPolls: React.FC<AdminPollsProps> = ({ polls }) => {
+export default function AdminPollIndex({ polls }: AdminPollIndexProps) {
     return (
         <AppLayout>
-            <div>
-                <Button asChild>
-                    <Link href="/admin/polls/create">Create New Poll</Link>
-                </Button>
-            </div>
+            <section className="px-16 py-4 mt-4 flex flex-col gap-2">
+                <div className="flex gap-2 self-end">
+                    <Button asChild size="sm">
+                        <Link href={AdminPollController.create()}>
+                            <PlusIcon />
+                            Create New Poll
+                        </Link>
+                    </Button>
+                    <Button asChild size="sm">
+                        <Link href={PollController.index()}>
+                            <ExternalLink />
+                            View Public Page
+                        </Link>
+                    </Button>
+                </div>
+                <Table>
+                    <TableCaption>A list of your polls.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="">Poll Title</TableHead>
+                            <TableHead>Withdrawable</TableHead>
+                            <TableHead>Result Visible</TableHead>
+                            <TableHead className="text-right">Vote Count</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {polls.data.map((poll) => (
+                            <TableRow key={poll.id}>
+                                <TableCell className="font-medium">{poll.title}</TableCell>
+                                <TableCell>{poll.withdrawable ? 'Yes' : 'No'}</TableCell>
+                                <TableCell>{poll.result_visible ? 'Yes' : 'No'}</TableCell>
+                                <TableCell className="text-right">{poll.votes.length}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </section>
         </AppLayout>
     );
-};
-
-export default AdminPolls;
+}
