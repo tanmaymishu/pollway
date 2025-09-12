@@ -48,7 +48,7 @@ export function Result({ options }: ResultProps) {
                     </Bar>
                 </BarChart>
             </ChartContainer>
-            <p className="text-lg text-center mt-1">Poll Result</p>
+            <p className="mt-1 text-center text-lg">Poll Result</p>
         </div>
     );
 }

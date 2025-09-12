@@ -29,5 +29,5 @@ export function useVote() {
         }
     }, []);
 
-    return {handleVote, handleVoteWithdraw};
+    return { handleVote, handleVoteWithdraw };
 }

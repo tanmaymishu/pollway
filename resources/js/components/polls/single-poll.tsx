@@ -133,22 +133,26 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                 </section>
             </CardContent>
             <CardFooter className="flex gap-2 self-center">
-                {window.location.pathname === "/polls" ? <Button variant="outline" asChild>
-                    <Link href={PollController.show(poll.slug)}>
-                    <Eye />
-                    View
-                    </Link>
-                </Button> : <Button variant="outline" asChild>
-                    <Link href={PollController.index()}>
-                        <Eye />
-                        View All Polls
-                    </Link>
-                </Button>}
+                {window.location.pathname === '/polls' ? (
+                    <Button variant="outline" asChild>
+                        <Link href={PollController.show(poll.slug)}>
+                            <Eye />
+                            View
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button variant="outline" asChild>
+                        <Link href={PollController.index()}>
+                            <Eye />
+                            View All Polls
+                        </Link>
+                    </Button>
+                )}
 
                 <Button
                     onClick={() => {
                         navigator.clipboard.writeText(`${window.location.host}/polls/${poll.slug}`);
-                        toast.success("Link copied to clipboard");
+                        toast.success('Link copied to clipboard');
                     }}
                     variant="outline"
                 >

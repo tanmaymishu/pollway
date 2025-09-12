@@ -27,9 +27,9 @@ class PollVoteController extends Controller
 
         $pollOption->increment('vote_count');
 
-        $pollVote = $pollVote->load(['option', 'poll' => fn($query) => $query->withOwnVote()]);
+        $pollVote = $pollVote->load(['option', 'poll' => fn ($query) => $query->withOwnVote()]);
 
-//        $pollVote = $pollVote->load(['option', 'poll.ownVote']);
+        //        $pollVote = $pollVote->load(['option', 'poll.ownVote']);
 
         broadcast(new PollVoted($pollVote))->toOthers();
 

@@ -34,14 +34,14 @@ class AdminPollController extends Controller
         $slug = Str::slug($request->title);
 
         while (Poll::query()->where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . Str::random(4);
+            $slug = $originalSlug.'-'.Str::random(4);
         }
 
         $poll = auth()->user()->polls()->create(
             $request->merge(['slug' => $slug])->only(['title', 'description', 'result_visible', 'withdrawable', 'slug'])
         );
 
-        $poll->options()->createMany(collect($request->options)->map(fn($option) => ['label' => $option]));
+        $poll->options()->createMany(collect($request->options)->map(fn ($option) => ['label' => $option]));
 
         return redirect()->route('admin.polls.index');
     }

@@ -1,19 +1,18 @@
 import { AppHeader } from '@/components/app-header';
 import SinglePoll from '@/components/polls/single-poll';
 import { Button } from '@/components/ui/button';
-import { Poll, SharedData, SimplePaginate } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { useVote } from '@/hooks/use-vote';
+import { Poll, SimplePaginate } from '@/types';
+import { Link } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, ChartColumnBig } from 'lucide-react';
 import * as React from 'react';
-import { useVote } from '@/hooks/use-vote';
 
 interface PollIndexProps {
     polls: SimplePaginate<Poll>;
 }
 
 const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
-    const ip = usePage<SharedData>().props.ip;
-    const {handleVote, handleVoteWithdraw} = useVote();
+    const { handleVote, handleVoteWithdraw } = useVote();
     return (
         <section>
             <AppHeader />
@@ -22,7 +21,10 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
                     <ChartColumnBig size={45} />
                     Polls
                 </section>
-                <section className="text-sm">You can only vote once from your IP. Rules may vary from poll to poll. Depending on the settings, some polls are undo/withdrawable, and some have relaxed visibility.</section>
+                <section className="text-sm">
+                    You can only vote once from your IP. Rules may vary from poll to poll. Depending on the settings, some polls are
+                    undo/withdrawable, and some have relaxed visibility.
+                </section>
                 <hr />
                 <section className="flex flex-col gap-2">
                     {polls?.data?.length > 0 &&
@@ -35,18 +37,31 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
                                     initialPoll={poll}
                                     handleVote={handleVote}
                                     handleVoteWithdraw={handleVoteWithdraw}
-                                    ip={ip}
                                 />
                             );
                         })}
                 </section>
                 <div className="flex justify-between">
-                    {polls.prev_page_url ? <Button asChild>
-                        <Link href={polls.prev_page_url}><ArrowLeft/>Prev Page</Link>
-                    </Button>: <div></div>}
-                    {polls.next_page_url ? <Button asChild>
-                        <Link href={polls.next_page_url}>Next Page<ArrowRight/></Link>
-                    </Button> : <div></div>}
+                    {polls.prev_page_url ? (
+                        <Button asChild>
+                            <Link href={polls.prev_page_url}>
+                                <ArrowLeft />
+                                Prev Page
+                            </Link>
+                        </Button>
+                    ) : (
+                        <div></div>
+                    )}
+                    {polls.next_page_url ? (
+                        <Button asChild>
+                            <Link href={polls.next_page_url}>
+                                Next Page
+                                <ArrowRight />
+                            </Link>
+                        </Button>
+                    ) : (
+                        <div></div>
+                    )}
                 </div>
             </div>
             <footer className="text-center">©{new Date().getFullYear()} PollWay.</footer>

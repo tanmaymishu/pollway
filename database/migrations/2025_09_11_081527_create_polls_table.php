@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('polls', function (Blueprint $table) {
             $table->id();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
-            $table->text('title');
-            $table->text('slug')->unique();
+            $table->string('title');
+            $table->string('slug')->unique();
             $table->boolean('withdrawable')->default(false);
             $table->boolean('result_visible')->default(false);
             $table->timestamps();

@@ -31,12 +31,12 @@ class Poll extends Model
         return $this->belongsTo(PollVote::class);
     }
 
-//    public function ownVote(): HasOne
-//    {
-//        return $this->hasOne(PollVote::class)
-//            ->where('ip_address', request()->ip())
-//            ->latest();
-//    }
+    //    public function ownVote(): HasOne
+    //    {
+    //        return $this->hasOne(PollVote::class)
+    //            ->where('ip_address', request()->ip())
+    //            ->latest();
+    //    }
 
     public function scopeWithOwnVote($query)
     {
@@ -45,7 +45,7 @@ class Poll extends Model
                 'own_vote_id' => PollVote::select('id')
                     ->whereColumn('poll_id', 'polls.id')
                     ->where('ip_address', request()->ip())
-                    ->take(1)
+                    ->take(1),
             ])->with('ownVote');
     }
 }

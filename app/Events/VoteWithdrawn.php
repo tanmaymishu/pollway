@@ -3,11 +3,8 @@
 namespace App\Events;
 
 use App\Models\Poll;
-use App\Models\PollVote;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -19,9 +16,7 @@ class VoteWithdrawn implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public int $pollId)
-    {
-    }
+    public function __construct(public int $pollId) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -43,6 +38,6 @@ class VoteWithdrawn implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return ['poll' => Poll::with('options')->withOwnVote()->find($this->pollId)];
-//        return ['poll' => Poll::with(['options', 'ownVote'])->find($this->pollId)];
+        //        return ['poll' => Poll::with(['options', 'ownVote'])->find($this->pollId)];
     }
 }

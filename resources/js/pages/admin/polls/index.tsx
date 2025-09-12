@@ -1,7 +1,6 @@
 import AdminPollController from '@/actions/App/Http/Controllers/AdminPollController';
 import PollController from '@/actions/App/Http/Controllers/PollController';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { Poll, SimplePaginate } from '@/types';
@@ -30,27 +29,27 @@ export default function AdminPollIndex({ polls }: AdminPollIndexProps) {
                         </Link>
                     </Button>
                 </div>
-                    <Table>
-                        <TableCaption>A list of your polls.</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="">Poll Title</TableHead>
-                                <TableHead>Withdrawable</TableHead>
-                                <TableHead>Result Visible</TableHead>
-                                <TableHead className="text-right">Vote Count</TableHead>
+                <Table>
+                    <TableCaption>A list of your polls.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="">Poll Title</TableHead>
+                            <TableHead>Withdrawable</TableHead>
+                            <TableHead>Result Visible</TableHead>
+                            <TableHead className="text-right">Vote Count</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {polls.data.map((poll) => (
+                            <TableRow key={poll.id}>
+                                <TableCell className="font-medium">{poll.title}</TableCell>
+                                <TableCell>{poll.withdrawable ? 'Yes' : 'No'}</TableCell>
+                                <TableCell>{poll.result_visible ? 'Yes' : 'No'}</TableCell>
+                                <TableCell className="text-right">{poll.votes.length}</TableCell>
                             </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {polls.data.map((poll) => (
-                                <TableRow key={poll.id}>
-                                    <TableCell className="font-medium">{poll.title}</TableCell>
-                                    <TableCell>{poll.withdrawable ? 'Yes' : 'No'}</TableCell>
-                                    <TableCell>{poll.result_visible ? 'Yes' : 'No'}</TableCell>
-                                    <TableCell className="text-right">{poll.votes.length}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                        ))}
+                    </TableBody>
+                </Table>
             </section>
         </AppLayout>
     );

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

@@ -1,4 +1,3 @@
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
@@ -39,7 +38,7 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const auth = usePage<SharedData>().props.auth
+    const auth = usePage<SharedData>().props.auth;
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
