@@ -23,7 +23,6 @@ class AdminPollController extends Controller
     {
         $request->validate([
             'title' => ['required'],
-            'description' => ['sometimes', 'nullable'],
             'result_visible' => ['required', 'boolean'],
             'withdrawable' => ['required', 'boolean'],
             'options' => ['required', 'array', 'min:2'],
