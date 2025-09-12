@@ -29,6 +29,12 @@ jobs:
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
           npm install
 
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse app --memory-limit=512M
+
+      - name: Run Type Coverage
+        run: vendor/bin/pest --type-coverage --memory-limit=512M --min=90
+
       - name: Run Pint
         run: vendor/bin/pint
 
