@@ -17,6 +17,7 @@ class PollController extends Controller
         $polls = Poll::query()
             ->withOwnVote()
             ->with(['options'])
+            ->latest()
             ->simplePaginate(5);
 
         return Inertia::render('polls/index', ['polls' => $polls]);
