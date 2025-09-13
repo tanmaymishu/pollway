@@ -14,7 +14,7 @@ const PollShow: React.FC<PollShowProps> = ({ poll }) => {
     return (
         <div>
             <AppHeader />
-            <section className="container mx-auto mt-4">
+            <section className="container mx-auto mt-4 px-4">
                 <SinglePoll
                     resultVisible={poll.result_visible}
                     withdrawable={poll.withdrawable}

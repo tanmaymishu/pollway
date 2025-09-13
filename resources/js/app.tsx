@@ -5,7 +5,6 @@ import { createInertiaApp } from '@inertiajs/react';
 import { configureEcho } from '@laravel/echo-react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { initializeTheme } from './hooks/use-appearance';
 
 configureEcho({
     broadcaster: 'reverb',
@@ -48,5 +47,8 @@ createInertiaApp({
     },
 });
 
-// This will set light / dark mode on load...
-initializeTheme();
+// Force light mode only
+if (typeof document !== 'undefined') {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
+}

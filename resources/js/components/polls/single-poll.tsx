@@ -66,11 +66,11 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
         }
     });
     return (
-        <Card className="flex flex-col rounded-sm p-10">
+        <Card className="flex flex-col rounded-sm p-4 sm:p-6 md:p-10">
             <CardContent className="border-b">
-                <section className="justify-between gap-4 py-2 sm:flex">
-                    <div key={poll.id} className="flex flex-col gap-4 sm:w-full md:w-1/2">
-                        <section className="text-2xl hover:underline">
+                <section className="flex flex-col gap-6 py-2 lg:flex-row lg:justify-between lg:gap-4">
+                    <div key={poll.id} className="flex flex-col gap-4 lg:w-1/2">
+                        <section className="text-lg hover:underline sm:text-xl lg:text-2xl">
                             <Link href={PollController.show(poll.slug)} className="text-gray-600">
                                 {poll.id}. {poll.title}
                             </Link>
@@ -81,7 +81,7 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                     <section key={o.id} className="flex items-center">
                                         <Label
                                             htmlFor={`poll_${o.poll_id}_opt_${o.id}`}
-                                            className="flex w-full cursor-pointer items-center gap-3 rounded-md border px-4 py-4"
+                                            className="flex w-full cursor-pointer items-center gap-3 rounded-md border px-3 py-3 sm:px-4 sm:py-4"
                                         >
                                             <RadioGroupItem
                                                 disabled={awaitingConfirmation || voted}
@@ -95,11 +95,11 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                                 className="cursor-pointer"
                                             />
                                             {
-                                                <div className="flex w-full items-center justify-between">
-                                                    <section className="flex items-center gap-2">
-                                                        <p>{o.label}</p>
+                                                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                                    <section className="flex flex-wrap items-center gap-2">
+                                                        <p className="text-sm sm:text-base">{o.label}</p>
                                                         {poll?.own_vote?.poll_option_id === o.id && (
-                                                            <Badge className="bg-green-200 text-gray-600">✅ Your Vote</Badge>
+                                                            <Badge className="bg-green-200 text-xs text-gray-600">✅ Your Vote</Badge>
                                                         )}
                                                     </section>
                                                     <section>
@@ -114,8 +114,10 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                                                             setAwaitingConfirmation(true);
                                                                             handleVoteWithdraw(poll.own_vote);
                                                                         }}
+                                                                        className="h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"
                                                                     >
-                                                                        <Undo />
+                                                                        <Undo className="h-4 w-4" />
+                                                                        <span className="sr-only sm:not-sr-only sm:ml-2">Withdraw</span>
                                                                     </Button>
                                                                 </TooltipTrigger>
                                                                 <TooltipContent>
@@ -132,28 +134,29 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                             })}
                         </RadioGroup>
                     </div>
-                    <div className="flex flex-col justify-center sm:w-full md:w-1/2">
+                    <div className="flex flex-col justify-center lg:w-1/2">
                         {poll.result_visible || voted ? (
                             <Result options={options} />
                         ) : (
-                            <p className="text-center">Result will be published once you vote</p>
+                            <p className="text-center text-sm sm:text-base">Result will be published once you vote</p>
                         )}
                     </div>
                 </section>
             </CardContent>
-            <CardFooter className="flex gap-2 self-center">
+            <CardFooter className="flex flex-col gap-2 self-center sm:flex-row">
                 {typeof window !== 'undefined' && window.location.pathname === '/polls' ? (
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild className="w-full sm:w-auto">
                         <Link href={PollController.show(poll.slug)}>
-                            <Eye />
-                            View
+                            <Eye className="h-4 w-4" />
+                            <span className="ml-2">View</span>
                         </Link>
                     </Button>
                 ) : (
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild className="w-full sm:w-auto">
                         <Link href={PollController.index()}>
-                            <Eye />
-                            View All Polls
+                            <Eye className="h-4 w-4" />
+                            <span className="ml-2 hidden sm:inline">View All Polls</span>
+                            <span className="ml-2 sm:hidden">All Polls</span>
                         </Link>
                     </Button>
                 )}
@@ -165,9 +168,11 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                             toast.success('Link copied to clipboard');
                         }}
                         variant="outline"
+                        className="w-full sm:w-auto"
                     >
-                        <Share2 />
-                        Share Poll Link
+                        <Share2 className="h-4 w-4" />
+                        <span className="ml-2 hidden sm:inline">Share Poll Link</span>
+                        <span className="ml-2 sm:hidden">Share</span>
                     </Button>
                 )}
             </CardFooter>

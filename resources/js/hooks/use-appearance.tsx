@@ -20,10 +20,9 @@ const setCookie = (name: string, value: string, days = 365) => {
 };
 
 const applyTheme = (appearance: Appearance) => {
-    const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
-
-    document.documentElement.classList.toggle('dark', isDark);
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    // Always force light mode
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
 };
 
 const mediaQuery = () => {
@@ -49,26 +48,18 @@ export function initializeTheme() {
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('system');
+    // Always return light mode and disable theme switching
+    const [appearance] = useState<Appearance>('light');
 
     const updateAppearance = useCallback((mode: Appearance) => {
-        setAppearance(mode);
-
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
-
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
-
-        applyTheme(mode);
+        // Do nothing - theme switching is disabled
+        applyTheme('light');
     }, []);
 
     useEffect(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        updateAppearance(savedAppearance || 'system');
-
-        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
-    }, [updateAppearance]);
+        // Always apply light theme
+        applyTheme('light');
+    }, []);
 
     return { appearance, updateAppearance } as const;
 }

@@ -16,9 +16,9 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
     return (
         <section>
             <AppHeader />
-            <div className="container mx-auto my-4 flex flex-col gap-2 p-8">
-                <section className="flex text-5xl text-primary">
-                    <ChartColumnBig size={45} />
+            <div className="container mx-auto my-4 flex flex-col gap-2 p-4 sm:p-8">
+                <section className="flex items-center gap-2 text-3xl text-primary sm:text-5xl">
+                    <ChartColumnBig className="size-8 sm:size-11" />
                     Polls
                 </section>
                 <section className="text-sm">
@@ -41,26 +41,28 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
                             );
                         })}
                 </section>
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
                     {polls.prev_page_url ? (
-                        <Button asChild>
+                        <Button asChild className="w-full sm:w-auto">
                             <Link href={polls.prev_page_url}>
-                                <ArrowLeft />
-                                Prev Page
+                                <ArrowLeft className="size-4" />
+                                <span className="hidden sm:inline">Prev Page</span>
+                                <span className="sm:hidden">Previous</span>
                             </Link>
                         </Button>
                     ) : (
-                        <div></div>
+                        <div className="hidden sm:block"></div>
                     )}
                     {polls.next_page_url ? (
-                        <Button asChild>
+                        <Button asChild className="w-full sm:w-auto">
                             <Link href={polls.next_page_url}>
-                                Next Page
-                                <ArrowRight />
+                                <span className="hidden sm:inline">Next Page</span>
+                                <span className="sm:hidden">Next</span>
+                                <ArrowRight className="size-4" />
                             </Link>
                         </Button>
                     ) : (
-                        <div></div>
+                        <div className="hidden sm:block"></div>
                     )}
                 </div>
             </div>

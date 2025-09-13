@@ -9,20 +9,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard } from '@/routes';
+import { dashboard, login, register } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { LayoutGrid, Menu } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+// Moved mainNavItems inside component to access auth state
 
 const rightNavItems: NavItem[] = [
     // {
@@ -47,6 +41,30 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const getInitials = useInitials();
+
+    // Conditional navigation items based on auth status
+    const mainNavItems: NavItem[] = auth?.user
+        ? [
+              {
+                  title: 'Dashboard',
+                  href: dashboard(),
+                  icon: LayoutGrid,
+              },
+          ]
+        : [];
+
+    const authNavItems: NavItem[] = !auth?.user
+        ? [
+              {
+                  title: 'Login',
+                  href: login(),
+              },
+              {
+                  title: 'Register',
+                  href: register(),
+              },
+          ]
+        : [];
     return (
         <>
             <div className="border-b border-sidebar-border/80">
@@ -68,6 +86,12 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className="flex flex-col space-y-4">
                                             {mainNavItems.map((item) => (
+                                                <Link key={item.title} href={item.href} className="flex items-center space-x-2 font-medium">
+                                                    {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            ))}
+                                            {authNavItems.map((item) => (
                                                 <Link key={item.title} href={item.href} className="flex items-center space-x-2 font-medium">
                                                     {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
                                                     <span>{item.title}</span>
@@ -105,6 +129,24 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
                                 {mainNavItems.map((item, index) => (
                                     <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                navigationMenuTriggerStyle(),
+                                                page.url === (typeof item.href === 'string' ? item.href : item.href.url) && activeItemStyles,
+                                                'h-9 cursor-pointer px-3',
+                                            )}
+                                        >
+                                            {item.icon && <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />}
+                                            {item.title}
+                                        </Link>
+                                        {page.url === item.href && (
+                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+                                        )}
+                                    </NavigationMenuItem>
+                                ))}
+                                {authNavItems.map((item, index) => (
+                                    <NavigationMenuItem key={`auth-${index}`} className="relative flex h-full items-center">
                                         <Link
                                             href={item.href}
                                             className={cn(
