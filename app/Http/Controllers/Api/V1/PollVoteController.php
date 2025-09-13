@@ -31,7 +31,7 @@ class PollVoteController extends Controller
 
         //        $pollVote = $pollVote->load(['option', 'poll.ownVote']);
 
-        broadcast(new PollVoted($pollVote))->toOthers();
+        broadcast(new PollVoted($pollVote, $request->ip()))->toOthers();
 
         return response()->json(['message' => 'Vote Casted', 'data' => $pollVote], 201);
     }
@@ -42,7 +42,7 @@ class PollVoteController extends Controller
         $pollVote->option()->decrement('vote_count');
         $pollVote->delete();
 
-        broadcast(new VoteWithdrawn($poll->id))->toOthers();
+        broadcast(new VoteWithdrawn($poll->id, $request->ip()))->toOthers();
 
         return response()->json(['message' => 'Vote Withdrawn'], 204);
     }

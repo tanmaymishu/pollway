@@ -16,7 +16,7 @@ class VoteWithdrawn implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public int $pollId) {}
+    public function __construct(public int $pollId, public string $ip) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -37,7 +37,10 @@ class VoteWithdrawn implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        return ['poll' => Poll::with('options')->withOwnVote()->find($this->pollId)];
+        return [
+            'poll' => Poll::with('options')->withOwnVote()->find($this->pollId),
+            'ip' => $this->ip,
+        ];
         //        return ['poll' => Poll::with(['options', 'ownVote'])->find($this->pollId)];
     }
 }

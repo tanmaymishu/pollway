@@ -6,8 +6,8 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Poll, PollOption, PollVote } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Poll, PollOption, PollVote, SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { useEchoPublic } from '@laravel/echo-react';
 import { Eye, Share2, Undo } from 'lucide-react';
 import { useState } from 'react';
@@ -22,6 +22,8 @@ interface PollProps {
 }
 
 function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) {
+    const ip = usePage<SharedData>().props.ip;
+
     const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
     const [options, setOptions] = useState<PollOption[]>(initialPoll.options);
     const [selectedOption, setSelectedOption] = useState<PollOption | undefined>(
@@ -30,7 +32,8 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
     const [poll, setPoll] = useState<Poll>(initialPoll);
     const [voted, setVoted] = useState(Boolean(initialPoll.own_vote_id));
 
-    useEchoPublic<{ pollVote: PollVote }>(`poll.${initialPoll.id}`, '.poll.voted', (e) => {
+    useEchoPublic<{ pollVote: PollVote; ip: string }>(`poll.${initialPoll.id}`, '.poll.voted', (e) => {
+        console.log(e);
         setOptions((prev) => {
             prev.splice(
                 prev.findIndex((po) => po.id === e.pollVote.poll_option_id),
@@ -39,22 +42,28 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
             );
             return [...prev];
         });
-
-        setVoted(true);
-        setAwaitingConfirmation(false);
-        setSelectedOption(e.pollVote.option);
-        e.pollVote.poll.own_vote = e.pollVote;
         setPoll(e.pollVote.poll);
-        toast.success('Thank you, your vote has been casted!');
+
+        if (e.pollVote.ip_address === ip) {
+            setVoted(true);
+            setAwaitingConfirmation(false);
+            setSelectedOption(e.pollVote.option);
+            e.pollVote.poll.own_vote = e.pollVote;
+            setPoll(e.pollVote.poll);
+            toast.success('Thank you, your vote has been casted!');
+        }
     });
 
-    useEchoPublic<{ poll: Poll }>(`poll.${initialPoll.id}`, '.poll.unvoted', (e) => {
-        setVoted(false);
-        setAwaitingConfirmation(false);
+    useEchoPublic<{ poll: Poll; ip: string }>(`poll.${initialPoll.id}`, '.poll.unvoted', (e) => {
+        console.log(e);
         setOptions(e.poll.options);
-        setSelectedOption(undefined);
         setPoll(e.poll);
-        toast.success('Thank you, your vote has been withdrawn!');
+        if (ip === e.ip) {
+            setVoted(false);
+            setAwaitingConfirmation(false);
+            setSelectedOption(undefined);
+            toast.success('Thank you, your vote has been withdrawn!');
+        }
     });
     return (
         <Card className="flex flex-col rounded-sm p-10">

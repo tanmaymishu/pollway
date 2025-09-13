@@ -16,7 +16,9 @@ class PollVoted implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public PollVote $pollVote) {}
+    public function __construct(public PollVote $pollVote, public string $ip)
+    {
+    }
 
     /**
      * Get the channels the event should broadcast on.
@@ -26,12 +28,20 @@ class PollVoted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('poll.'.$this->pollVote->poll_id),
+            new Channel('poll.' . $this->pollVote->poll_id),
         ];
     }
 
     public function broadcastAs()
     {
         return 'poll.voted';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'pollVote' => $this->pollVote,
+            'ip' => $this->ip,
+        ];
     }
 }
