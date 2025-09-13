@@ -47,9 +47,12 @@ class Poll extends Model
             ->addSelect([
                 'own_vote_id' => PollVote::select('id')
                     ->whereColumn('poll_id', 'polls.id')
-                    ->where('ip_address', request()->ip())
-                    ->orWhere(function ($query) {
-                        $query->whereNotNull('user_id')->where('user_id', auth()->id());
+                    ->where(function ($query) {
+                        $query->where('ip_address', request()->ip())
+                            ->orWhere(function ($subQuery) {
+                                $subQuery->whereNotNull('user_id')
+                                    ->where('user_id', auth()->id());
+                            });
                     })
                     ->take(1),
             ])->with('ownVote');
