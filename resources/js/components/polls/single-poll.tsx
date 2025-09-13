@@ -17,8 +17,8 @@ interface PollProps {
     resultVisible: boolean;
     withdrawable: boolean;
     initialPoll: Poll;
-    handleVote: (o: PollOption) => void;
-    handleVoteWithdraw: (pv: PollVote) => void;
+    handleVote: (o: PollOption) => Promise<boolean>;
+    handleVoteWithdraw: (pv: PollVote) => Promise<boolean>;
 }
 
 function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) {
@@ -82,11 +82,13 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
             setAwaitingConfirmation(false);
             setSelectedOption(undefined);
             // Clear the user's own vote information
-            setPoll((prevPoll) => ({
-                ...prevPoll,
-                own_vote: null,
-                own_vote_id: null,
-            }));
+            setPoll((prevPoll) => {
+                return {
+                    ...prevPoll,
+                    own_vote: undefined,
+                    own_vote_id: null,
+                };
+            });
             toast.success('Thank you, your vote has been withdrawn!');
         }
     });
@@ -144,10 +146,12 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                                                         disabled={awaitingConfirmation}
                                                                         onClick={async () => {
                                                                             setAwaitingConfirmation(true);
-                                                                            const success = await handleVoteWithdraw(poll.own_vote);
-                                                                            if (!success) {
-                                                                                // Reset state if withdrawal failed
-                                                                                setAwaitingConfirmation(false);
+                                                                            if (poll?.own_vote) {
+                                                                                const success = await handleVoteWithdraw(poll?.own_vote);
+                                                                                if (!success) {
+                                                                                    // Reset state if withdrawal failed
+                                                                                    setAwaitingConfirmation(false);
+                                                                                }
                                                                             }
                                                                         }}
                                                                         className="h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"

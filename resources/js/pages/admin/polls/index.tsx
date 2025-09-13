@@ -36,6 +36,7 @@ export default function AdminPollIndex({ polls }: AdminPollIndexProps) {
                             <TableHead className="">Poll Title</TableHead>
                             <TableHead>Withdrawable</TableHead>
                             <TableHead>Result Visible</TableHead>
+                            <TableHead>Link</TableHead>
                             <TableHead className="text-right">Vote Count</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -45,6 +46,7 @@ export default function AdminPollIndex({ polls }: AdminPollIndexProps) {
                                 <TableCell className="font-medium">{poll.title}</TableCell>
                                 <TableCell>{poll.withdrawable ? 'Yes' : 'No'}</TableCell>
                                 <TableCell>{poll.result_visible ? 'Yes' : 'No'}</TableCell>
+                                <TableCell></TableCell>
                                 <TableCell className="text-right">{poll.votes.length}</TableCell>
                             </TableRow>
                         ))}

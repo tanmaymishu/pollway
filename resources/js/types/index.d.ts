@@ -50,8 +50,8 @@ export interface Poll {
     description?: string;
     options: PollOption[];
     votes: PollVote[];
-    own_vote: PollVote;
-    own_vote_id: number;
+    own_vote?: PollVote;
+    own_vote_id: number | null;
     result_visible: boolean;
     withdrawable: boolean;
     created_at: string;

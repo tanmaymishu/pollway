@@ -11,7 +11,7 @@ class AdminPollController extends Controller
 {
     public function index()
     {
-        return Inertia::render('admin/polls/index', ['polls' => Poll::with('votes', 'options')->simplePaginate(10)]);
+        return Inertia::render('admin/polls/index', ['polls' => Poll::with(['votes', 'options'])->simplePaginate(10)]);
     }
 
     public function create()

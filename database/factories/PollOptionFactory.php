@@ -19,7 +19,7 @@ class PollOptionFactory extends Factory
     {
         return [
             'poll_id' => Poll::factory(),
-            'label' => fake()->word,
+            'label' => fake()->unique()->word,
         ];
     }
 }

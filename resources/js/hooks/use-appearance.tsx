@@ -51,9 +51,9 @@ export function useAppearance() {
     // Always return light mode and disable theme switching
     const [appearance] = useState<Appearance>('light');
 
-    const updateAppearance = useCallback((/*mode: Appearance*/) => {
+    const updateAppearance = useCallback((mode: Appearance) => {
         // Do nothing - theme switching is disabled
-        applyTheme('light');
+        applyTheme(mode ? 'light' : 'light');
     }, []);
 
     useEffect(() => {
