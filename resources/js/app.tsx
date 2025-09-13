@@ -29,16 +29,7 @@ createInertiaApp({
         root.render(
             <>
                 {app}
-                <Toaster
-                    position="top-right"
-                    toastOptions={{
-                        style: {
-                            background: 'bg-primary',
-                            color: 'hsl(var(--foreground))',
-                            border: '1px solid hsl(var(--border))',
-                        },
-                    }}
-                />
+                <Toaster position="top-right" />
             </>,
         );
     },

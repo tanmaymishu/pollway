@@ -22,8 +22,12 @@ class EnsureUniqueVote
             abort(404);
         }
 
-        if (PollVote::where(['poll_id' => $poll->id, 'ip_address' => $request->ip()])->exists()) {
+        if (!empty(auth()->id()) && PollVote::whereNotNull('user_id')->where(['poll_id' => $poll->id, 'user_id' => auth()->id()])->exists()) {
             abort(403, 'Already casted vote for this poll!');
+        }
+
+        if (PollVote::where(['poll_id' => $poll->id, 'ip_address' => $request->ip()])->exists()) {
+            abort(403, 'Already casted vote for this poll from this IP!');
         }
 
         return $next($request);

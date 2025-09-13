@@ -12,6 +12,7 @@ interface PollIndexProps {
 }
 
 const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
+    console.log(polls);
     const { handleVote, handleVoteWithdraw } = useVote();
     return (
         <section>
