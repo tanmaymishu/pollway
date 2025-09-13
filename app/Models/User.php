@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Poll::class, 'created_by');
     }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(PollVote::class);
+    }
 }

@@ -22,8 +22,12 @@ const PollIndex: React.FC<PollIndexProps> = ({ polls }) => {
                     Polls
                 </section>
                 <section className="text-sm">
-                    You can only vote once from your IP. Rules may vary from poll to poll. Depending on the settings, some polls are
-                    undo/withdrawable, and some have relaxed visibility.
+                    <p>
+                        You can only vote once from your IP. Depending on the poll settings, some polls are undo/withdrawable, and some have relaxed visibility.
+                    </p>
+                    <p className="">
+                        <span className="font-semibold">💡Pro Tip: </span>Vote as a logged in user to keep track of your votes.
+                    </p>
                 </section>
                 <hr />
                 <section className="flex flex-col gap-2">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminPollController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PollController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,7 @@ Route::get('/polls', [PollController::class, 'index'])->name('polls.index');
 Route::get('/polls/{poll:slug}', [PollController::class, 'show'])->name('polls.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(IsAdmin::class)->group(function () {
         Route::get('/admin/polls', [AdminPollController::class, 'index'])->name('admin.polls.index');

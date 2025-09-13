@@ -7,14 +7,14 @@ use App\Models\PollVote;
 test('submitting a vote twice from the same ip throws 403', function () {
     $poll = Poll::factory()->create();
     [$pollOptionA, $pollOptionB] = PollOption::factory(2)->recycle($poll)->create();
-    $response = $this->post(route('polls.store', $poll->id), [
+    $response = $this->post(route('v1.poll-votes.store', $poll->id), [
         'poll_option_id' => $pollOptionA->id,
     ]);
 
     $response->assertSessionDoesntHaveErrors();
     $response->assertStatus(201);
 
-    $response = $this->post(route('polls.store', $poll->id), [
+    $response = $this->post(route('v1.poll-votes.store', $poll->id), [
         'poll_option_id' => $pollOptionB->id,
     ]);
 
@@ -24,7 +24,7 @@ test('submitting a vote twice from the same ip throws 403', function () {
 test('if a poll is withdrawable then a vote can be withdrawn', function () {
     $poll = Poll::factory()->create();
     $pollVote = PollVote::factory()->recycle($poll)->create(['ip_address' => '127.0.0.1']);
-    $response = $this->delete(route('polls.destroy', $pollVote->id));
+    $response = $this->delete(route('v1.poll-votes.destroy', $pollVote->id));
 
     $response->assertStatus(204);
 });
