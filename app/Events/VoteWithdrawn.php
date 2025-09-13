@@ -38,9 +38,8 @@ class VoteWithdrawn implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'poll' => Poll::with('options')->withOwnVote()->find($this->pollId),
+            'poll' => Poll::with('options')->find($this->pollId),
             'ip' => $this->ip,
         ];
-        //        return ['poll' => Poll::with(['options', 'ownVote'])->find($this->pollId)];
     }
 }

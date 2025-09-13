@@ -33,35 +33,60 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
     const [voted, setVoted] = useState(Boolean(initialPoll.own_vote_id));
 
     useEchoPublic<{ pollVote: PollVote; ip: string }>(`poll.${initialPoll.id}`, '.poll.voted', (e) => {
-        console.log(e);
-        setOptions((prev) => {
-            prev.splice(
-                prev.findIndex((po) => po.id === e.pollVote.poll_option_id),
-                1,
-                e.pollVote.option,
-            );
-            return [...prev];
-        });
-        setPoll(e.pollVote.poll);
+        console.log('Vote received:', e);
 
+        // Always update vote counts for all users (this is public information)
+        setOptions((prev) => {
+            const updatedOptions = [...prev];
+            const optionIndex = updatedOptions.findIndex((po) => po.id === e.pollVote.poll_option_id);
+            if (optionIndex !== -1) {
+                // Update the vote count for this option
+                updatedOptions[optionIndex] = {
+                    ...updatedOptions[optionIndex],
+                    vote_count: e.pollVote.option.vote_count,
+                };
+            }
+            return updatedOptions;
+        });
+
+        // Only update personal voting state for the user who voted
         if (e.pollVote.ip_address === ip) {
             setVoted(true);
             setAwaitingConfirmation(false);
             setSelectedOption(e.pollVote.option);
-            e.pollVote.poll.own_vote = e.pollVote;
-            setPoll(e.pollVote.poll);
+            // Update poll with the user's own vote information
+            setPoll((prevPoll) => ({
+                ...prevPoll,
+                own_vote: e.pollVote,
+                own_vote_id: e.pollVote.id,
+            }));
             toast.success('Thank you, your vote has been casted!');
         }
     });
 
     useEchoPublic<{ poll: Poll; ip: string }>(`poll.${initialPoll.id}`, '.poll.unvoted', (e) => {
-        console.log(e);
-        setOptions(e.poll.options);
-        setPoll(e.poll);
+        console.log('Vote withdrawn:', e);
+
+        // Always update vote counts for all users (this is public information)
+        setOptions((prev) => {
+            // Update all options with new vote counts from the withdrawn vote
+            return prev.map((option) => {
+                const updatedOption = e.poll.options.find((o) => o.id === option.id);
+                return updatedOption ? { ...option, vote_count: updatedOption.vote_count } : option;
+            });
+        });
+
+        // Only update personal voting state for the user who withdrew
         if (ip === e.ip) {
             setVoted(false);
             setAwaitingConfirmation(false);
             setSelectedOption(undefined);
+            // Clear the user's own vote information
+            setPoll((prevPoll) => ({
+                ...prevPoll,
+                own_vote: null,
+                own_vote_id: null,
+            }));
             toast.success('Thank you, your vote has been withdrawn!');
         }
     });
@@ -85,10 +110,17 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                         >
                                             <RadioGroupItem
                                                 disabled={awaitingConfirmation || voted}
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     setSelectedOption(o);
                                                     setAwaitingConfirmation(true);
-                                                    handleVote(o);
+                                                    const success = await handleVote(o);
+                                                    if (!success) {
+                                                        // Reset state if vote failed
+                                                        setAwaitingConfirmation(false);
+                                                        setSelectedOption(
+                                                            voted ? options.find((opt) => opt.id == poll?.own_vote?.poll_option_id) : undefined,
+                                                        );
+                                                    }
                                                 }}
                                                 value={o.id.toString()}
                                                 id={`poll_${o.poll_id}_opt_${o.id}`}
@@ -110,9 +142,13 @@ function SinglePoll({ initialPoll, handleVote, handleVoteWithdraw }: PollProps) 
                                                                         variant="destructive"
                                                                         size="sm"
                                                                         disabled={awaitingConfirmation}
-                                                                        onClick={() => {
+                                                                        onClick={async () => {
                                                                             setAwaitingConfirmation(true);
-                                                                            handleVoteWithdraw(poll.own_vote);
+                                                                            const success = await handleVoteWithdraw(poll.own_vote);
+                                                                            if (!success) {
+                                                                                // Reset state if withdrawal failed
+                                                                                setAwaitingConfirmation(false);
+                                                                            }
                                                                         }}
                                                                         className="h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3"
                                                                     >
